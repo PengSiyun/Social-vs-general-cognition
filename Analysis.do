@@ -124,7 +124,41 @@ drop white
 encode race_string,gen(white)
 recode white (1=.) (2/5=0) (6=1)
 
-pwcorr bridging netsize facemem_cr office_deceit office_emotion office_faux office_infer office_motiv attention execfxn epmem language visual speed,sig
+pwcorr bridging netsize facemem_cr tom_afct tom_cog attention execfxn epmem language visual speed,sig
+
+
+
+/*individual measures*/
+
+
+
+domin bridging attention execfxn epmem facemem_cr office_total, all(age female white i.edu) //ssc install domin
+domin bridging attention execfxn epmem facemem_cr office_total age female white edu //ssc install domin
+eststo clear
+eststo mfull: reg bridging execfxn epmem facemem_cr tom_afct tom_cog age female white i.edu , vce(robust)
+esttab *mfull using "reg.csv", replace nobaselevels drop(age female white *.edu) b(%5.2f) se(%5.2f) star r2(%5.2f) aic(%5.2f) bic(%5.2f) nogap noconstant
+
+*why episodic memory not matter: tom_cog eat up the variance
+eststo clear
+eststo m1: reg bridging epmem age female white i.edu, vce(robust)
+eststo m2: reg bridging epmem execfxn age female white i.edu , vce(robust)
+eststo m3: reg bridging epmem tom_afct age female white i.edu , vce(robust)
+eststo m4: reg bridging epmem tom_cog age female white i.edu , vce(robust)
+esttab * using "reg.csv", append nobaselevels drop(age female white *.edu) b(%5.2f) se(%5.2f) star r2(%5.2f) aic(%5.2f) bic(%5.2f) nogap noconstant
+
+*why tom_afct not matter: epmem, tom_cog eat up the variance
+eststo clear
+eststo m1: reg bridging tom_afct age female white i.edu, vce(robust)
+eststo m2: reg bridging tom_afct execfxn age female white i.edu , vce(robust)
+eststo m3: reg bridging tom_afct epmem age female white i.edu , vce(robust)
+eststo m4: reg bridging tom_afct tom_cog age female white i.edu , vce(robust)
+esttab * using "reg.csv", append nobaselevels drop(age female white *.edu) b(%5.2f) se(%5.2f) star r2(%5.2f) aic(%5.2f) bic(%5.2f) nogap noconstant
+
+
+
+
+/*latent*/
+
 
 eststo clear
 eststo m1: reg bridging facemem_cr office_deceit office_emotion office_faux office_infer office_motiv attention execfxn epmem age female white i.edu, vce(robust)
