@@ -126,9 +126,15 @@ recode white (1=.) (2/5=0) (6=1)
 
 pwcorr bridging netsize facemem_cr tom_afct tom_cog attention execfxn epmem language visual speed,sig
 
+foreach i of varlist execfxn epmem attention facemem_cr tom_afct tom_cog {
+	egen `i'_std=std(`i')
+	drop `i'
+	rename `i'_std `i'
+}
 
 
 /*individual measures*/
+
 
 
 
@@ -136,24 +142,31 @@ domin bridging attention execfxn epmem facemem_cr office_total, all(age female w
 domin bridging attention execfxn epmem facemem_cr office_total age female white edu //ssc install domin
 eststo clear
 eststo mfull: reg bridging execfxn epmem facemem_cr tom_afct tom_cog age female white i.edu , vce(robust)
-esttab *mfull using "reg.csv", replace nobaselevels drop(age female white *.edu) b(%5.2f) se(%5.2f) star r2(%5.2f) aic(%5.2f) bic(%5.2f) nogap noconstant
+esttab *mfull using "reg.csv", replace nobaselevels b(%5.2f) se(%5.2f) star r2(%5.2f) aic(%5.2f) bic(%5.2f) nogap noconstant
 
 *why episodic memory not matter: tom_cog eat up the variance
 eststo clear
+eststo m0: reg bridging epmem, vce(robust)
 eststo m1: reg bridging epmem age female white i.edu, vce(robust)
 eststo m2: reg bridging epmem execfxn age female white i.edu , vce(robust)
 eststo m3: reg bridging epmem tom_afct age female white i.edu , vce(robust)
 eststo m4: reg bridging epmem tom_cog age female white i.edu , vce(robust)
-esttab * using "reg.csv", append nobaselevels drop(age female white *.edu) b(%5.2f) se(%5.2f) star r2(%5.2f) aic(%5.2f) bic(%5.2f) nogap noconstant
+esttab * using "reg.csv", append nobaselevels order(epmem execfxn tom_afct tom_cog) b(%5.2f) se(%5.2f) star r2(%5.2f) aic(%5.2f) bic(%5.2f) nogap noconstant
 
 *why tom_afct not matter: epmem, tom_cog eat up the variance
 eststo clear
+eststo m0: reg bridging tom_afct, vce(robust)
 eststo m1: reg bridging tom_afct age female white i.edu, vce(robust)
 eststo m2: reg bridging tom_afct execfxn age female white i.edu , vce(robust)
 eststo m3: reg bridging tom_afct epmem age female white i.edu , vce(robust)
 eststo m4: reg bridging tom_afct tom_cog age female white i.edu , vce(robust)
-esttab * using "reg.csv", append nobaselevels drop(age female white *.edu) b(%5.2f) se(%5.2f) star r2(%5.2f) aic(%5.2f) bic(%5.2f) nogap noconstant
+esttab * using "reg.csv", append nobaselevels order(tom_afct execfxn epmem tom_cog) b(%5.2f) se(%5.2f) star r2(%5.2f) aic(%5.2f) bic(%5.2f) nogap noconstant
 
+*why face memory not matter: controls eat up the variance
+eststo clear
+eststo m1: reg bridging facemem_cr, vce(robust)
+eststo m2: reg bridging facemem_cr age female white i.edu , vce(robust)
+esttab * using "reg.csv", append nobaselevels b(%5.2f) se(%5.2f) star r2(%5.2f) aic(%5.2f) bic(%5.2f) nogap noconstant
 
 
 
