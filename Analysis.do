@@ -184,9 +184,6 @@ label var epmem "Episodic memory"
 
 
 
-domin bridging attention execfxn epmem facemem_cr office_total, all(age female white i.edu) //ssc install domin
-domin bridging attention execfxn epmem facemem_cr office_total age female white edu //ssc install domin
-
 *table 2
 eststo clear
 eststo mbase: reg bridging age female white i.edu , vce(robust)
@@ -194,7 +191,7 @@ eststo mfull: reg bridging facemem_cr epmem tom_afct execfxn tom_cog age female 
 eststo mbase2: reg bonding age female white i.edu , vce(robust)
 eststo mfull2: reg bonding facemem_cr epmem tom_afct execfxn tom_cog age female white i.edu , vce(robust)
 
-esttab mbase mfull mbase2 mfull2 using "reg.csv", replace nobaselevels b(%5.2f) se(%5.2f) star r2(%5.2f) aic(%5.2f) bic(%5.2f) nogap noconstant
+esttab mbase mfull mbase2 mfull2 using "reg.csv", replace nobaselevels b(%5.2f) se(%5.2f) star r2(%5.2f) aic(%5.2f) bic(%5.2f) nogap noconstant scalars(F)
 
 eststo m1: reg bridging execfxn, vce(robust)
 eststo m2: reg bridging epmem, vce(robust)
@@ -223,7 +220,7 @@ eststo m4: reg bridging tom_afct tom_cog age female white i.edu , vce(robust)
 eststo m5: reg bonding tom_cog tom_afct age female white i.edu , vce(robust)
 eststo m6: reg bonding tom_cog execfxn age female white i.edu , vce(robust)
 
-esttab * using "reg.csv", append nobaselevels order(epmem execfxn tom_afct tom_cog) b(%5.2f) se(%5.2f) star r2(%5.2f) aic(%5.2f) bic(%5.2f) nogap noconstant
+esttab * using "reg.csv", append nobaselevels order(epmem execfxn tom_afct tom_cog) b(%5.2f) se(%5.2f) star r2(%5.2f) aic(%5.2f) bic(%5.2f) nogap noconstant scalars(F)
 
 *Table S2,S3
 eststo clear
@@ -242,7 +239,7 @@ eststo m9: reg bonding age female white i.edu execfxn, vce(robust)
 eststo m10: reg bonding age female white i.edu tom_cog, vce(robust)
 eststo m10a: reg bonding age female white i.edu tom_cog_s, vce(robust)
 
-esttab * using "reg.csv", append nobaselevels b(%5.2f) se(%5.2f) star r2(%5.2f) aic(%5.2f) bic(%5.2f) nogap noconstant
+esttab * using "reg.csv", append nobaselevels b(%5.2f) se(%5.2f) star r2(%5.2f) aic(%5.2f) bic(%5.2f) nogap noconstant scalars(F)
 
 *Table S4
 
@@ -250,7 +247,10 @@ eststo clear
 eststo m1: reg bridging age female white i.edu facemem_cr epmem tom_afct tom_afct_s execfxn tom_cog tom_cog_s, vce(robust)
 eststo m2: reg bonding age female white i.edu facemem_cr epmem tom_afct tom_afct_s execfxn tom_cog tom_cog_s , vce(robust)
 
-esttab m1 m2 using "reg.csv", append nobaselevels b(%5.2f) se(%5.2f) star r2(%5.2f) aic(%5.2f) bic(%5.2f) nogap noconstant
+esttab m1 m2 using "reg.csv", append nobaselevels b(%5.2f) se(%5.2f) star r2(%5.2f) aic(%5.2f) bic(%5.2f) nogap noconstant scalars(F)
+
+*Dominance analysis
+domin bridging facemem_cr epmem tom_afct execfxn tom_cog, all(age female white i.edu) //ssc install domin
 
 
 /*
